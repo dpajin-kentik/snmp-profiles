@@ -343,3 +343,8 @@ metrics:
         column:
           name: ifAlias
           OID: 1.3.6.1.2.1.31.1.1.1.18
+      # MTU of the interface
+      - tag: if_MTU
+        column:
+          name: ifMtu
+          OID: 1.3.6.1.2.1.2.2.1.4

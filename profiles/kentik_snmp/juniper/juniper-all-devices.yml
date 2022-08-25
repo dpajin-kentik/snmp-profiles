@@ -6,16 +6,66 @@ extends:
   - bgp4-mib.yml
   - ospf-mib.yml
   - host-resources-mib.yml
+  - entity-mib.yml
 
 sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.*
 
+
+metric_tags:
+  - column:
+      OID: 1.3.6.1.4.1.2636.3.1.3.0
+      name: serial_number
+  - column:
+      OID: 1.3.6.1.4.1.2636.3.1.2.0
+      name: product_name
+  - column:
+      OID: .1.0.8802.1.1.2.1.3.4.0
+      name: os_version
+      conversion: "regexp: ([\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+)"
+      allow_duplicate: true
+  # - column:
+  #     OID: .1.0.8802.1.1.2.1.3.4.0
+  #     name: os_name
+  #     conversion: "regexp: kernel\\s+(\\w+)\\s+[\\w\\.\\-]+,"
+  #     allow_duplicate: true
+
 metrics:
+  - MIB: device_normalized
+    symbol:
+      OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0.0
+      name: temperature
+  - MIB: device_normalized
+    symbol:
+      OID: 1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0.0
+      name: cpu_util
+  - MIB: device_normalized
+    symbol:
+      OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0.0
+      name: memory_util
+
+
   - MIB: JUNIPER-MIB
     table:
       OID: 1.3.6.1.4.1.2636.3.1.13.1
       name: jnxOperatingEntry
     symbols:
+      - OID: 1.3.6.1.4.1.2636.3.1.13.1.6
+        name: jnxOperatingState
+        poll_time_sec: 60
+        tag: state
+        enum:
+          unknown: 1
+          running: 2
+          ready: 3
+          reset: 4
+          runningAtFullSpeed: 5
+          down: 6
+          standby: 7
+      - OID: 1.3.6.1.4.1.2636.3.1.13.1.7
+        name: jnxOperatingTemp
+        poll_time_sec: 60
+        tag: temperature
       - OID: 1.3.6.1.4.1.2636.3.1.13.1.8
         name: jnxOperatingCPU
         poll_time_sec: 60
@@ -24,8 +74,17 @@ metrics:
         name: jnxOperatingBuffer
         poll_time_sec: 60
         tag: MemoryUtilization
+      - OID: 1.3.6.1.4.1.2636.3.1.13.1.26
+        name: jnxOperatingFRUPower
+        poll_time_sec: 60
+        tag: Power
+        unit: V
     metric_tags:
       - tag: chassis
         column:
           OID: 1.3.6.1.4.1.2636.3.1.13.1.18
           name: jnxOperatingChassisDescr
+      - tag: component_description
+        column:
+          OID: 1.3.6.1.4.1.2636.3.1.13.1.5
+          name: jnxOperatingDescr

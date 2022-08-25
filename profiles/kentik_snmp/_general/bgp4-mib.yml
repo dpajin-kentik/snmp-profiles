@@ -45,16 +45,33 @@ metrics:
 
 
     metric_tags:
+      - tag: peer_id
+        column:
+          name: bgpPeerIdentifier
+          OID: .1.3.6.1.2.1.15.3.1.1
       # The negotiated version of BGP running between the two peers.
       - tag: negotiated_version
         column:
           name: bgpPeerNegotiatedVersion
           OID: 1.3.6.1.2.1.15.3.1.4
+      - tag: local_address
+        column:
+          name: bgpPeerLocalAddr
+          OID: 1.3.6.1.2.1.15.3.1.5
+      - tag: local_port
+        column:
+          name: bgpPeerLocalPort
+          OID: .1.3.6.1.2.1.15.3.1.6
       # The remote IP address of this entry's BGP peer.
       - tag: neighbor_ip
         column:
           name: bgpPeerRemoteAddr
           OID: 1.3.6.1.2.1.15.3.1.7
+          allow_duplicate: true
+      - tag: remote_port
+        column:
+          name: bgpPeerRemotePort
+          OID: .1.3.6.1.2.1.15.3.1.8
       # The remote autonomous system number.
       - tag: remote_as
         column:
