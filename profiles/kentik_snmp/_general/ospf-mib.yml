@@ -1,7 +1,57 @@
 # Profile is intended to be used in an extends block
 # http://oid-info.com/get/1.3.6.1.2.1.14
 ---
+
+
+
+
+
+
+# metrics:
+#   - MIB: device_ospf
+#     symbol:
+#       OID: 1.3.6.1.2.1.14.1.6.0
+#       name: ospf-external-lsa-count
+#     metric_tags:
+#       - column:
+#           OID: .1.3.6.1.2.1.14.1.1.0
+#           name: ospf-router-id
+#       - column:
+#           OID: .1.3.6.1.2.1.14.1.2.0
+#           name: ospf-version
+
+# metrics:
+#   - MIB: device_ospf
+#     symbol:
+#       OID: 1.3.6.1.2.1.14.1.6.0
+#       name: ospf-external-lsa-count
+
+#     metric_tags:
+#       - column:
+#           OID: 1.3.6.1.2.1.14.1.1.0
+#           name: ospf-router-id
+#       - column:
+#           OID: 1.3.6.1.2.1.14.1.2.0
+#           name: ospf-version
+
 metrics:
+  - MIB: device_ospf
+    table:
+      OID: 1.3.6.1.4.1.3213123213.1.1.1.1
+      name: device_ospfTable
+    symbols:
+      - OID: 1.3.6.1.2.1.14.1.6
+        name: ospf-external-lsa-count
+
+    metric_tags:
+      - column:
+          OID: 1.3.6.1.2.1.14.1.1
+          name: ospf-router-id
+      - column:
+          OID: 1.3.6.1.2.1.14.1.2
+          name: ospf-version
+
+
   - MIB: OSPF-MIB
     table:
       OID: 1.3.6.1.2.1.14.10
@@ -57,11 +107,3 @@ metrics:
           OID: 1.3.6.1.2.1.14.7.1.1
           name: ospfIfIpAddress
         tag: ospf_ip_address
-      - column:
-          OID: 1.3.6.1.2.1.14.10.1.3
-          name: ospfNbrRtrId
-          allow_duplicate: true
-        table: ospfNbrTable
-        MIB: OSPF-MIB
-        tag: neighbor_id
-
