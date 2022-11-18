@@ -7,14 +7,14 @@ metrics:
   # MIB: ENTITY-MIB
   table:
     OID: 1.3.6.1.2.1.47.1.1.1    # entPhysicalTable
-    name: "" # /components
+    name: component # /components
     # oc-path: /components/component/state
 
   symbols:
 
       # here just to have one metric
     - name: components:fru
-      OID: .1.3.6.1.2.1.47.1.1.1.1.16
+      OID: 1.3.6.1.2.1.47.1.1.1.1.16
       
   metric_tags:
     - tag: components:description
