@@ -15,6 +15,7 @@ extends:
   - ospf-mib.yml
   - system-mib.yml
   - entity-mib.yml
+  - entity-sensor-mib.yml
 
 
 metric_tags:

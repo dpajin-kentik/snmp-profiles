@@ -2,55 +2,132 @@
 # http://oid-info.com/get/1.3.6.1.2.1.4.31
 ---
 metrics:
-- MIB: IP
-  table:
-    OID: .1.3.6.1.2.1.4.20
-    name: ipv4-address-metadata
-  symbols:
-    - OID: .1.3.6.1.2.1.4.20.1.5
-      name: ipAdEntReasmMaxSize
-      tag: ip-max-size
-  metric_tags:
-    - column:
-        OID: .1.3.6.1.2.1.4.20.1.1
-        name: ipAdEntAddr
-      tag: ipv4-address
-    - column:
-        OID: .1.3.6.1.2.1.4.20.1.2
-        name: ipAdEntIfIndex
-      tag: if-index
-    - column:
-        OID: .1.3.6.1.2.1.4.20.1.3
-        name: ipAdEntNetMask
-      tag: ipv4-netmask
+
+# THis is a table to collect IPv4 addresses info as a metadata
+# According to the openconfig model this would be path: /interfaces/interface/subinterfaces/subinterface/ipv4/addresses/address/state
+# Shorter it can be: /interfaces/subinterfaces/ipv4/addresses
+
+            #print(n)
+            # mask_list = n.netmask.split(".")
+            # prefix = 0
+            # for octet in mask_list:
+            #   prefix = prefix + str(bin(int(octet))).count("1")
+            # n.prefix = prefix
+            # return None
 
 
-# - MIB: IP
+# - MIB: openconfig-interfaces
 #   table:
-#     OID: .1.3.6.1.2.1.55.1.8
-#     name: ipv6-address-metadata
+#     OID: .1.3.6.1.2.1.4.20
+#     name: interfaces/subinterfaces/ipv4/addresses
 #   symbols:
-#     - OID: .1.3.6.1.2.1.55.1.8.1.5
-#       name: ipv6AddrStatus
-#       tag: ipv6-address-status
+#     - tag: ip-max-size
+#       OID: .1.3.6.1.2.1.4.20.1.5
+#       name: ipAdEntReasmMaxSize
 #   metric_tags:
-#     - column:
-#         OID: .1.3.6.1.2.1.55.1.8.1.1
-#         name: ipv6AddrAddress
-#       tag: ipv6-address
-#     - column:
-#         OID: index
+#     - tag: ip
+#       column:
+#         OID: .1.3.6.1.2.1.4.20.1.1
+#         name: ipAdEntAddr
+#     - tag: ifindex
+#       column:
+#         OID: .1.3.6.1.2.1.4.20.1.2
 #         name: ipAdEntIfIndex
-#         conversion: "index_to_value:index[0].toInt"
-#       tag: if-index
-#     - column:
+#     - tag: netmask
+#       column:
+#         OID: .1.3.6.1.2.1.4.20.1.3
+#         name: ipAdEntNetMask
+#     - tag: prefix-length
+#       column:
+#         OID: 1.3.6.1.2.1.4.20.1.3
+#         name: ipAdEntNetMask_2
+#         script: |
+#           def main(n):
+#             if n.netmask not in "":
+#               bits = dict([("0", 0), ("128", 1), ("192", 2), ("224", 3), ("240", 4), ("248", 5), ("252", 6), ("254", 7), ("255", 8)])
+#               mask_list = n.netmask.split(".")
+#               prefix = 0
+#               for octet in mask_list:
+#                 prefix = prefix + bits[octet]
+#               print("prefix=" + str(prefix))
+#               n.prefix = prefix
+#               return None
+#             else:
+#               print("netmask is empty")
+#               print(n)
+#               return None
+
+
+
+
+# - MIB: openconfig-interfaces2
+#   table:
+#     OID: 1.3.6.1.2.1.55.1.8
+#     name: interfaces/subinterfaces/ipv6/addresses
+#   symbols:
+#     - tag: status
+#       OID: 1.3.6.1.2.1.55.1.8.1.5
+#       name: ipv6AddrStatus
+#   metric_tags:
+#     #- column:
+#     #    OID: .1.3.6.1.2.1.55.1.8.1.1
+#     #    name: ipv6AddrAddress
+#     #  tag: ipv6_address
+#     - tag: type
+#       column:
 #         OID: .1.3.6.1.2.1.55.1.8.1.3
-#         name: ipv6AddrAddress
-#       tag: ipv6-address-type
-#     - column:
+#         name: ipv6AddrType
+#         enum:
+#           stateless: 1
+#           stateful: 2
+#           unknown: 3
+#     - tag: status
+#       column:
+#         OID: .1.3.6.1.2.1.55.1.8.1.5
+#         name: ipv6AddrStatus
+#         enum:
+#           preferred: 1
+#           deprecated: 2
+#           invalid: 3
+#           inaccessible: 4
+#           unknown: 5 
+    
+#     # - tag: origin
+    
+#     - tag: prefix-length
+#       column:
 #         OID: .1.3.6.1.2.1.55.1.8.1.2
 #         name: ipv6AddrPfxLength
-#       tag: ipv6-prefix-length
+#         script: |
+#           def main(n):
+
+#             def index_to_ipv6_address(index_str):
+#               ipv6_address = ""
+#               for i, value in enumerate(index_str.split(".")):
+#                   if i > 0 and i % 2 == 0:    
+#                       ipv6_address += ":"
+#                   v = int(value)
+#                   if v < 15:
+#                       ipv6_address += "0%x" % (v)
+#                   else:
+#                       ipv6_address += "%x" % (v)
+#               return ipv6_address
+          
+#             if n.status not in "":
+#               print("ipv6 metadata")
+#               print(n.Index)
+#               print(n)
+#               index_list = n.Index.split(".", 1)
+#               print(index_list)
+#               n.ifindex = index_list[0]
+#               print("ifindex=" + index_list[0])
+#               ip = index_to_ipv6_address(index_list[1])
+#               print("ip=" + ip)
+#               n.ip = ip
+#               return None
+#             return None
+
+
 
 - MIB: IP-MIB
   table:
