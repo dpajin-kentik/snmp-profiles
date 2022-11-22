@@ -3,10 +3,10 @@
 
 metrics:
 
-- MIB: /interfaces/subinterfaces/ipv6/addresses
+- MIB: /interfaces/subinterfaces
   table:
     OID: 1.3.6.1.2.1.55.1.8    # Ipv6AddrTable
-    name: ""
+    name: ipv6/addresses
     # full openconfig path: /interfaces/interface/subinterfaces/subinterface/ipv6/addresses/address/state
   
   symbols:
@@ -57,25 +57,19 @@ metrics:
             def index_to_ipv6_address(index_str):
               ipv6_address = ""
               for i, value in enumerate(index_str.split(".")):
-                  if i > 0 and i % 2 == 0:    
-                      ipv6_address += ":"
-                  v = int(value)
-                  if v < 15:
-                      ipv6_address += "0%x" % (v)
-                  else:
-                      ipv6_address += "%x" % (v)
+                if i > 0 and i % 2 == 0:    
+                    ipv6_address += ":"
+                v = int(value)
+                if v < 15:
+                    ipv6_address += "0%x" % (v)
+                else:
+                    ipv6_address += "%x" % (v)
               return ipv6_address
           
-            if n.status not in "":
-              print("ipv6 metadata")
-              print(n.Index)
-              print(n)
+            if n["ipv6-address:status"] not in "":
               index_list = n.Index.split(".", 1)
-              print(index_list)
-              n.['ipv6-address:ifindex'] = index_list[0]
-              print("ifindex=" + index_list[0])
+              n["ipv6-address:ifindex"] = index_list[0]
               ip = index_to_ipv6_address(index_list[1])
-              print("ip=" + ip)
-              n.['ipv6-address:ip'] = ip
-              return None
+              n["ipv6-address:ip"] = ip
+
             return None

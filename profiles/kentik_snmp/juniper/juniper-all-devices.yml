@@ -25,10 +25,11 @@ extends:
   #- ospf-mib.yml
   #- interfaces.yml
   - if-mib.yml
-  - openconfig-interfaces-ipv4.yml
-  - openconfig-interfaces-ipv6.yml
+  - interfaces_addresses_ipv4.yml
+  - interfaces_addresses_ipv6.yml
   - ospf.yml
   - lldp.yml
+  - components.yml
   #- ip-mib.yml
   #- host-resources-mib.yml
   - entity-mib_components.yml
