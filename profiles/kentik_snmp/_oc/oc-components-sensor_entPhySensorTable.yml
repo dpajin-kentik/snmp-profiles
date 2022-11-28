@@ -1,8 +1,18 @@
-# Profile is intended to be used in an extends block
-# https://www.circitor.fr/Mibs/Html/E/ENTITY-SENSOR-MIB.php
+# oc-components_entPhysicalTable.yml
+# SNMP: 
+#   - ENTITY-SENSOR-MIB::entPhySensorTable
+#   - ENTITY-MIB::entPhysicalTable
+# OC: The OC path does not exist - we are extending this as /components/component/state
+# Kentik-path: /components/sensor
+
+# Profile intents to collect metadata and metrics about device components from SNMP ENTITY-MIB and ENTITY-SENSOR-MIB
+# ENTITY-SENSOR-MIB does not have exact equivalent in the OC models, 
+# but trying to normalize metrics to OC-like.
+
+---
 
 extends:
-  - components.yml
+  - oc-components_entPhysicalTable.yml
 
 metrics:
 

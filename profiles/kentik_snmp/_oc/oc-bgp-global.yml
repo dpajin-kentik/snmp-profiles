@@ -1,3 +1,8 @@
+# oc-bgp-global.yml
+# SNMP: BGP4-MIB
+# OC: /network-instances/network-instance/protocols/protocol/bgp/global/state
+# Kentik-path: /protocols/bgp/global
+#
 # Profile intents to collect metadata and metrics about device interface from SNMP BGP4-MIB
 # Trying to normalize metrics to openconfig-bgp model as much as possible
 
@@ -9,7 +14,7 @@ metrics:
   - MIB: /protocols
     table:
       OID: 1.3.6.1.4.1.14.1
-      name: "bgp/global" # /protocol/bgp/global
+      name: "bgp/global"      # Kentik-path: /protocol/bgp/global
       # oc_path: /network-instances/network-instance/protocols/protocol/bgp/global/state
 
     symbols:

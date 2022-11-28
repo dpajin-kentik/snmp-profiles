@@ -1,16 +1,18 @@
-# Example output:
-# $ grep -R components, influx | grep Container | grep power
-# components,components:description=Container\ of\ Container\ of\ Power\ Supply,components:name=Container\ of\ Container\ of\ Power\ Supply,components:parent=1,components:parent-position=5,components:removable=false,components:type=container,device_ip=198.186.190.9,device_name=cat6509,index=9,power-supply/redundancy-mode=nonRedundant,power-supply/units=centiAmpsAt42v,tags.dc=iad1,tags.kentik.model=Catalyst\ WSC6503,tags.kentik.vendor=Cisco,tags.type=spine components:fru=2i,power-supply/output-current=2189i,power-supply/input-current=1701i 1669028044
-
-# This profile will add metrics and metadata on top of already existing
-# which are defined in the components.yml
-# for those components which return values from additoonal table with the same index
+# oc-components-power-supply_cefcFRUPowerSupplyGroupTable.yml
+# SNMP: CISCO-ENTITY-FRU-CONTROL-MIB::cefcFRUPowerSupplyGroupTable
+#   - ENTITY-MIB::entPhysicalTable
+# OC: /components/component/power-supply/state
+# Kentik-path: /components/power-supply
+#
+# Profile intents to collect metadata and metrics about device power supplies from CISCO-ENTITY-FRU-CONTROL-MIB::cefcFRUPowerSupplyGroupTable
+# This MIBs is using the same indexes from ENTITY-MIB, and adds metics only to the components which are power-supplies
+# Trying to normalize metrics to OC models as much as possible
 
 
 ---
 
 extends:
-  - components.yml
+  - oc-components_entPhyiscalTable.yml
 
 metrics:
 

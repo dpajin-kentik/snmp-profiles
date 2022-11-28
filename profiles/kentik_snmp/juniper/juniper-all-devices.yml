@@ -1,5 +1,3 @@
-# http://oid-info.com/get/1.3.6.1.4.1.2636.3.1.13.1
-
 # sysDescr examples from Juniper devices:
 # 
 # Juniper Networks, Inc. qfx5100-48s-6q Ethernet Switch, kernel JUNOS 14.1X53-D40.8, Build date: 2016-11-09 02:17:36 UTC Copyright (c) 1996-2016 Juniper Networks, Inc.
@@ -53,31 +51,31 @@ sysobjectid:
 #       - OID: 1.3.6.1.2.1.25.1.7.0
 #         name: hrSystemMaxProcesses
 
-#metric_tags:
+# 
+metric_tags:
   # Tags from SYSTEM-MIB which we need to parse in the Juniper specific way
-  # - column:
-  #     OID: .1.3.6.1.2.1.1.5.0
-  #     name: sysName
-  # - column:
-  #     OID: .1.3.6.1.2.1.1.6.0
-  #     name: sysLocation
-  # - column:
-  #     OID: .1.3.6.1.2.1.1.2.0
-  #     name: sysObjectID
-  #     allow_duplicate: true
-  # - column:
-  #     OID: .1.3.6.1.2.1.1.1.0
-  #     name: test_blahblah
-  #     conversion: "regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
-  #     #conversion: "regexp:(?P<os_name>JUNOS)"
-
-  # # Vendor specific OIDS
-  # - column:
-  #     OID: .1.3.6.1.4.1.2636.3.1.3.0
-  #     name: serial_number
-  # - column:
-  #     OID: .1.3.6.1.4.1.2636.3.1.2.0
-  #     name: product_name
+  - column:
+      OID: .1.3.6.1.2.1.1.5.0
+      name: sysName
+  - column:
+      OID: .1.3.6.1.2.1.1.6.0
+      name: sysLocation
+  - column:
+      OID: .1.3.6.1.2.1.1.2.0
+      name: sysObjectID
+      allow_duplicate: true
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: test_blahblah
+      conversion: "regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
+      #conversion: "regexp:(?P<os_name>JUNOS)"
+  # Vendor specific OIDS
+  - column:
+      OID: .1.3.6.1.4.1.2636.3.1.3.0
+      name: serial_number
+  - column:
+      OID: .1.3.6.1.4.1.2636.3.1.2.0
+      name: product_name
 
 metrics:
 

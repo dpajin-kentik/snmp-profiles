@@ -10,23 +10,18 @@
 # https://mibs.observium.org/mib/CISCO-RTTMON-MIB/
 ---
 extends:
-  - bgp4-mib.yml
+  # Generic MIB2 profiles
   - if-mib.yml
-  #- ospf-mib.yml
   - system-mib.yml
-  - interfaces_addresses_ipv4.yml
-  - interfaces_addresses_ipv6.yml
-  - ospf.yml
-  - lldp.yml
-  - components.yml
-  #- entity-mib.yml
-  #- entity-sensor-mib.yml
-  #- components.yml
-  - components.yml
-  - components_sensor_separate.yml
-  #- cisco-components_power-supply.yml
-  - cisco-components_power-supply_separate.yml
-  #- cisco-components_module.yml
+  # Normalized to Kentik/OC data models
+  - oc-lldp.yml
+  - oc-ospf.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+  - oc-components_entPhysicalTable.yml
+  - oc-components-sensor_entPhySensorTable.yml
+  - oc-components-power-supply_cefcFRUPowerSupplyGroupTable
+  # Cisco specific stuff
 
 
 
@@ -46,7 +41,7 @@ metric_tags:
 metrics:
   - MIB: device_normalized
     symbol:
-      OID: 1.3.6.1.4.1.9.2.1.58.0
+      OID: 1.3.6.1.4.1.9.2.1.58.0    # deprecated avgBusy5(58)
       name: cpu_util
       
 

@@ -1,10 +1,18 @@
+# oc-lldp.yml
+# SNMP: LLDP-MIB
+# OC: /lldp
+
 # Profile intents to collect metadata and metrics about device LLDP from SNMP LLDP-MIB
 # Trying to normalize metrics openconfig model as much as possible
 
 
 metrics:
 
-# LLDP Global: measurement: /lldp/global
+# LLDP global metadata
+# SNMP: LLDP-MIB::lldpLocalSystemData
+# OC: /lldp/state
+# Kentik-path: /lldp/global
+
 
   - MIB: 	/lldp
     table:
@@ -24,13 +32,13 @@ metrics:
           OID: .1.0.8802.1.1.2.1.3.1
           name: lldpLocChassisIdSubtype
           enum: 
-            chassisComponent: 1
-            interfaceAlias: 2
-            portComponent: 3
-            macAddress: 4
-            networkAddress: 5
-            interfaceName: 6
-            local: 7
+            CHASSIS_COMPONENT: 1
+            INTERFACE_ALIAS: 2
+            PORT_COMPONENT: 3
+            MAC_ADDRESS: 4
+            NETWORK_ADDRESS: 5
+            INTERFACE_NAME: 6
+            LOCAL: 7
 
       - tag: lldp:chassis-id
         column:
@@ -48,7 +56,10 @@ metrics:
           name: lldpLocSysDesc
 
 
-# LLDP neighbors: /lldp/interfaces/neighbors
+# LLDP neighbors metadata
+# SNMP: LLDP-MIB::lldpRemTable
+# OC: /lldp/interfaces/interface/neighbors/neighbor/state
+# Kentik-path: /lldp/interfaces/neighbors
   - MIB: 	/lldp
     table:
       OID: .1.0.8802.1.1.2.1.4.1    # LLDP-MIB::lldpRemTable
@@ -66,13 +77,13 @@ metrics:
           OID: 1.0.8802.1.1.2.1.4.1.1.4
           name: lldpRemChassisIdSubtype
           enum: 
-            chassisComponent: 1
-            interfaceAlias: 2
-            portComponent: 3
-            macAddress: 4
-            networkAddress: 5
-            interfaceName: 6
-            local: 7
+            CHASSIS_COMPONENT: 1
+            INTERFACE_ALIAS: 2
+            PORT_COMPONENT: 3
+            MAC_ADDRESS: 4
+            NETWORK_ADDRESS: 5
+            INTERFACE_NAME: 6
+            LOCAL: 7
 
       - tag: lldp-neighbor:chassis-id
         column:
@@ -84,13 +95,13 @@ metrics:
           OID: 1.0.8802.1.1.2.1.4.1.1.6
           name: lldpRemPortIdSubtype
           enum: 
-            interfaceAlias: 1
-            portComponent: 2
-            macAddress: 3
-            networkAddress: 4
-            interfaceName: 5
-            agentCircuitId: 6
-            local: 7
+            INTERFACE_ALIAS: 1
+            PORT_COMPONENT: 2
+            MAC_ADDRESS: 3
+            NETWORK_ADDRESS: 4
+            INTERFACE_NAME: 5
+            AGENT_CIRCUIT_ID: 6
+            LOCAL: 7
 
       # The string value used to identify the port component associated with the remote system.
       - tag: lldp-neighbor:port-id
