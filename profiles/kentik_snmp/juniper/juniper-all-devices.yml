@@ -32,6 +32,9 @@ extends:
   #- host-resources-mib.yml
   - entity-mib_components.yml
   # - entity-mib.yml
+  - oc-components-cpu_jnxOperatingTable.yml
+  - oc-components-memory_jnxOperatingTable.yml
+  - oc-components-temperature_jnxOperatingTable
 
   - juniper-bgp.yml
 

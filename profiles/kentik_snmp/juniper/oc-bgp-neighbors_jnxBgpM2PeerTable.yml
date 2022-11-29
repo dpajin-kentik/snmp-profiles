@@ -1,17 +1,22 @@
-# Juniper propriatery BGP4-V2-MIB-JUNIPER normalized to the OpenCOnfig-like structure
-# 
+# oc-bgp-neighbors_jnxBgpM2PeerTable.yml
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
+#
+# Profile intents to collect metadata and metrics about device interface from SNMP BGP4-V2-MIB-JUNIPER
+# Trying to normalize metrics to openconfig-bgp model as much as possible
 
 ---
 
 extends:
-  #- system-mib.yml
-  #- if-mib.yml
   - bgp-global.yml
 
 metrics:
 
-
-# BGP neighbors
+# Description: BGP neighbors metadata and status
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PeerTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/state
+# Kentik-path: /protocols/bgp/neighbors
 
   - MIB: /protocols   # openconfig-bgp
     table:
@@ -63,70 +68,76 @@ metrics:
 
     metric_tags:
 
-      - column:
+      - tag: bgp:neighbor-address
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.1
           name: jnxBgpM2PeerIdentifier
-        tag: bgp:neighbor-address
 
-      - column:
+      - tag: bgp:local-address-type
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.6
           name: jnxBgpM2PeerLocalAddrType
           enum:
             ipv4: 1
             ipv6: 2
-        tag: bgp:local-address-type
 
-      - column:
+      - tag: bgp:local-address
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.7
           name: jnxBgpM2PeerLocalAddr
           conversion: hextoip
-        tag: bgp:local-address
 
-      - column:
+      - tag: bgp:local-port
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.8
           name: jnxBgpM2PeerLocalPort
-        tag: bgp:local-port
 
-      - column:
+      - tag: bgp:local-as
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.9
           name: jnxBgpM2PeerLocalAs
-        tag: bgp:local-as
 
-      - column:
+      - tag: bgp:remote-address-type
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.10
           name: jnxBgpM2PeerRemoteAddrType
           enum:
             ipv4: 1
             ipv6: 2
-        tag: bgp:remote-address-type
 
-      - column:
+      - tag: bgp:remote-address
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.11
           name: jnxBgpM2PeerRemoteAddr
           conversion: hextoip
-        tag: bgp:remote-address
 
-      - column:
+      - tag: bgp:remote-port
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.12
           name: jnxBgpM2PeerRemotePort
-        tag: bgp:remote-port
 
-      - column:
+      - tag: bgp:peer-as
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.13
           name: jnxBgpM2PeerRemoteAs
-        tag: bgp:peer-as
 
-      - column:
+      # Not in the OC - this is used to correlate the prefix counters in the different table        
+      - tag: bgp:peer-index
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.14
           name: jnxBgpM2PeerIndex
-        tag: bgp:peer-index
-
-      - column:
+        
+      - tag: bgp:network-instance
+        column:
           OID: .1.3.6.1.4.1.2636.5.1.1.2.1.1.1.15
           name: jnxBgpM2PeerRoutingInstance
-        tag: bgp:network-instance
 
 
+
+# Description: BGP prefixes per neighbor
+# SNMP: BGP4-V2-MIB-JUNIPER::jnxBgpM2PrefixCountersTable
+# OC: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/afi-safis/afi-safi/state/prefixes
+# Kentik-path: /protocols/bgp/neighbors/prefixes
 
   - MIB: /protocols
     table:
@@ -158,30 +169,37 @@ metrics:
 
     metric_tags:
 
+    # OC: afi-safi-name
+    # https://github.com/openconfig/public/blob/master/release/models/bgp/openconfig-bgp-types.yang
+
     - tag: bgp:afi
       column:
         OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.1
         name: jnxBgpM2PrefixCountersAfi
         enum:
-          unknown: 0
-          ipv4: 1
-          ipv6: 2
-          ipv4z: 3
-          ipv6z: 4
-          dns: 16
-          vpn: 25
+          UNKNOWN: 0
+          IPV4: 1
+          IPV6: 2
+          IPV4Z: 3
+          IPV6Z: 4
+          DNS: 16
+          L2VPN: 25
+          LINKSTATE: 16388
 
     - tag: bgp:safi
       column:
         OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.2
         name: jnxBgpM2PrefixCountersSafi
         enum:
-          unicast: 1
-          multicast: 2
-          labeled-unicast: 4
-          vpn: 128
-          mcast-vpn: 129
-          flowspec: 133
-          ms-pw: 6
-          l2vpn: 65
-          evpn: 70
+          UNICAST: 1
+          MULTICAST: 2
+          LABELED_UNICAST: 4
+          L3VPN: 128
+          MCAST-VPN: 129
+          FLOWSPEC: 133
+          MS-PW: 6
+          VPLS: 65
+          EVPN: 70
+          LINKSTATE: 71
+          VPN: 72
+
