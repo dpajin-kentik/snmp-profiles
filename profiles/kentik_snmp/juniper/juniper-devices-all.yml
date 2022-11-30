@@ -17,26 +17,22 @@
 
 ---
 extends:
-  #- system-mib.yml
-  #- if-mib.yml
-  #- bgp4-mib.yml
-  #- ospf-mib.yml
-  #- interfaces.yml
+  # Generic MIB2 profiles
   - if-mib.yml
-  - interfaces_addresses_ipv4.yml
-  - interfaces_addresses_ipv6.yml
-  - ospf.yml
-  - lldp.yml
-  - components.yml
-  #- ip-mib.yml
-  #- host-resources-mib.yml
-  - entity-mib_components.yml
-  # - entity-mib.yml
+  - system-mib.yml
+  # Normalized to Kentik/OC data models
+  - oc-lldp.yml
+  - oc-ospf.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+  # - oc-components_entPhysicalTable.yml  # can be enabled if Juniper device supports ENTITY-MIB
+  # - oc-components-sensor_entPhySensorTable.yml
+
+  # Juniper to OC
   - oc-components-cpu_jnxOperatingTable.yml
   - oc-components-memory_jnxOperatingTable.yml
-  - oc-components-temperature_jnxOperatingTable
-
-  - juniper-bgp.yml
+  - oc-components-temperature_jnxOperatingTable.yml
+  - oc-bgp-neighbors_jnxBgpM2PeerTable.yml
 
 sysobjectid:
   - 1.3.6.1.4.1.2636.1.1.1.*
@@ -153,49 +149,3 @@ metrics:
   #     name: os_name
   #     conversion: "regexp: kernel\\s+(\\w+)\\s+[\\w\\.\\-]+,"
   #     allow_duplicate: true
-
-
-
-  # - MIB: JUNIPER-MIB
-  #   table:
-  #     OID: 1.3.6.1.4.1.2636.3.1.13.1
-  #     name: jnxOperatingEntry
-  #   symbols:
-  #     - OID: 1.3.6.1.4.1.2636.3.1.13.1.6
-  #       name: jnxOperatingState
-  #       poll_time_sec: 60
-  #       tag: state
-  #       enum:
-  #         unknown: 1
-  #         running: 2
-  #         ready: 3
-  #         reset: 4
-  #         runningAtFullSpeed: 5
-  #         down: 6
-  #         standby: 7
-  #     - OID: 1.3.6.1.4.1.2636.3.1.13.1.7
-  #       name: jnxOperatingTemp
-  #       poll_time_sec: 60
-  #       tag: temperature
-  #     - OID: 1.3.6.1.4.1.2636.3.1.13.1.8
-  #       name: jnxOperatingCPU
-  #       poll_time_sec: 60
-  #       tag: CPU
-  #     - OID: 1.3.6.1.4.1.2636.3.1.13.1.11
-  #       name: jnxOperatingBuffer
-  #       poll_time_sec: 60
-  #       tag: MemoryUtilization
-  #     - OID: 1.3.6.1.4.1.2636.3.1.13.1.26
-  #       name: jnxOperatingFRUPower
-  #       poll_time_sec: 60
-  #       tag: Power
-  #       unit: V
-  #   metric_tags:
-  #     - tag: chassis
-  #       column:
-  #         OID: 1.3.6.1.4.1.2636.3.1.13.1.18
-  #         name: jnxOperatingChassisDescr
-  #     - tag: component_description
-  #       column:
-  #         OID: 1.3.6.1.4.1.2636.3.1.13.1.5
-  #         name: jnxOperatingDescr

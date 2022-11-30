@@ -1,0 +1,21 @@
+# Cisco all devices
+
+---
+extends:
+  # Generic MIB2 profiles
+  - if-mib.yml
+  - system-mib.yml
+  # Normalized to Kentik/OC data models
+  - oc-lldp.yml
+  - oc-ospf.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+  - oc-components_entPhysicalTable.yml
+  - oc-components-sensor_entPhySensorTable.yml
+  # Cisco specific stuff
+  - cisco-oc-components-cpu.yml
+  - cisco-oc-components-memory.yml
+  - cisco-oc-components-power-supply.yml
+  - cisco-oc-components-fan.yml
+  - cisco-oc-components-temperature.yml
+

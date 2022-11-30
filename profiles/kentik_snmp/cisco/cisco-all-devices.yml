@@ -20,7 +20,7 @@ extends:
   - oc-address-ipv6_ipv6AddrTable.yml
   - oc-components_entPhysicalTable.yml
   - oc-components-sensor_entPhySensorTable.yml
-  - oc-components-power-supply_cefcFRUPowerSupplyGroupTable
+  - oc-components-power-supply_cefcFRUPowerSupplyGroupTable.yml
   # Cisco specific stuff
 
 

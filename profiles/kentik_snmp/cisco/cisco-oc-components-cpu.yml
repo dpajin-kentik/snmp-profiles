@@ -1,0 +1,39 @@
+# file: oc-components-cpu_cpmCPUTotalTable.yml
+# SNMP: CISCO-PROCESS-MIB::cpmCPUTotalTable
+# OC: /components/component/cpu/utilization/state
+# Kentik-path: /components/cpu/utilization
+
+
+---
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.9.9.109.1.1.1    # CISCO-PROCESS-MIB::cpmCPUTotalTable
+      name: cpu/utilization 
+    symbols:
+
+      # The overall CPU busy percentage in the last 1 minute period.
+      - tag: cpu-utilization:instant
+        OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.6
+        name: cpmCPUTotal5secRev
+
+      - tag: cpu-utilization:avg
+        OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.7
+        name: cpmCPUTotal1minRev
+
+    metric_tags:
+      - tag: components:physical-index
+        column:
+          OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.2
+          name: cpmCPUTotalPhysicalIndex
+        # The script will overwrite the index of the table with the value from cpmCPUTotalPhysicalIndex
+        # which is the index value from the ENTITY-MIB
+          script: |
+            def main(n):
+              n["Index"] = str(n["components:physical-index"])
+              return None

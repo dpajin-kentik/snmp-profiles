@@ -2,7 +2,7 @@
 # http://oid-info.com/get/1.3.6.1.4.1.9.9.276.1.1.1
 ---
 extends:
-  - cisco-all-devices.yml
+  - cisco-devices-all.yml
 
 provider: kentik-switch
 

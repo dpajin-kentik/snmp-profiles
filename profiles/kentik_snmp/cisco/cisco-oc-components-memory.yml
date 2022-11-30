@@ -1,0 +1,41 @@
+# file: oc-components-memory_ciscoMemoryPoolTable.yml
+# SNMP: CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable
+# OC: /components/component/state/memory
+# Kentik-path: /components/memory
+
+
+---
+
+extends:
+  - oc-components_entPhysicalTable.yml
+
+metrics:
+
+  - MIB: /components
+    table:
+      OID: .1.3.6.1.4.1.9.9.48.1.1    # CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable
+      name: memory
+    symbols:
+
+      # OC specifies 'utilized'=used and 'available'=total.
+      # In OC there is not 'free' or 'utilization' which is percentage
+      # utilization does not exist in the OC
+      - tag: memory:utilized
+        OID: .1.3.6.1.4.1.9.9.48.1.1.1.5
+        name: ciscoMemoryPoolUsed
+
+      # Does not exist in OC
+      - tag: memory:free
+        OID: .1.3.6.1.4.1.9.9.48.1.1.1.6
+        name: ciscoMemoryPoolFree
+
+      # utilization does not exist in the OC
+      # We need starlark support for metrics to process this and calculate utilization
+      #- tag: memory:utilization
+
+
+    metric_tags:
+      - tag: components:name
+        column:
+          OID: .1.3.6.1.4.1.9.9.48.1.1.1.2
+          name: ciscoMemoryPoolName
