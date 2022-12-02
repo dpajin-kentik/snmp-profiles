@@ -1,8 +1,8 @@
-# oc-components-temperature_ciscoEnvMonFanStatusTable.yml
+# file: cisco-oc-components-fan.yml
 # SNMP: CISCO-ENVMON-MIB::ciscoEnvMonFanStatusTable
 # OC: /components/component/state/temperature
 # Kentik-path: /components/temperature
-
+---
 
 extends:
   - oc-components_entPhysicalTable.yml
@@ -51,15 +51,16 @@ metrics:
       # OC: OPENCONFIG_ALARM_SEVERITY - UNKNOWN, MINOR, WARNING, MAJOR, CRITICAL
       # 'state' does not exist in OC
       - tag: fan:state
-        OID: .1.3.6.1.4.1.9.9.13.1.4.1.3
-        name: ciscoEnvMonFanState
-        enum:
-          NORMAL: 1
-          WARNING: 2
-          MAJOR: 3
-          CRITICAL: 4
-          UNKNOWN: 5
-          UNKNOWN: 6
+        column:
+          OID: .1.3.6.1.4.1.9.9.13.1.4.1.3
+          name: ciscoEnvMonFanState
+          enum:
+            NORMAL: 1
+            WARNING: 2
+            MAJOR: 3
+            CRITICAL: 4
+            UNKNOWN: 5
+            UNKNOWN: 6
         # Represents the state of a device being monitored. Valid values are: 
         # normal(1): the environment is good, such as low temperature. 
         # warning(2): the environment is bad, such as temperature above normal operation range but not too high. 

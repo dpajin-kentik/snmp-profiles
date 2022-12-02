@@ -1,9 +1,7 @@
-# file: oc-components-cpu_cpmCPUTotalTable.yml
+# file: cisco-oc-components-cpu.yml
 # SNMP: CISCO-PROCESS-MIB::cpmCPUTotalTable
 # OC: /components/component/cpu/utilization/state
 # Kentik-path: /components/cpu/utilization
-
-
 ---
 
 extends:

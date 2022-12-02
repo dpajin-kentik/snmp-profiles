@@ -12,7 +12,7 @@
 extends:
   # Generic MIB2 profiles
   - if-mib.yml
-  - system-mib.yml
+  #- system-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
   - oc-ospf.yml
@@ -23,27 +23,6 @@ extends:
   - oc-components-power-supply_cefcFRUPowerSupplyGroupTable.yml
   # Cisco specific stuff
 
-
-
-metric_tags:
-  - column:
-      OID: 1.3.6.1.2.1.47.1.1.1.1.11.1
-      name: serial_number
-  - column:
-      OID: 1.3.6.1.4.1.9.9.25.1.1.1.2.5
-      name: os_version
-      conversion: "regexp:(\\d+[\\.\\w\\(\\)]+)"
-  - column:
-      OID: 1.3.6.1.4.1.9.9.25.1.1.1.2.7
-      name: os_name
-      conversion: "regexp:\\((.*)\\),\\sVersion"
-
-metrics:
-  - MIB: device_normalized
-    symbol:
-      OID: 1.3.6.1.4.1.9.2.1.58.0    # deprecated avgBusy5(58)
-      name: cpu_util
-      
 
   # - MIB: device_normalized
   #   symbol:
@@ -58,6 +37,7 @@ metrics:
   #     tag: MemoryFree
   #     allow_duplicate: true
 
+metrics:
 
   # A table of overall CPU statistics.
   # Polled at 60s to support anomaly detection.

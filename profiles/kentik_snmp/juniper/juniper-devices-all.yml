@@ -18,8 +18,8 @@
 ---
 extends:
   # Generic MIB2 profiles
-  - if-mib.yml
-  - system-mib.yml
+  #- if-mib.yml
+  #- system-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
   - oc-ospf.yml
@@ -65,7 +65,7 @@ metric_tags:
       allow_duplicate: true
   - column:
       OID: .1.3.6.1.2.1.1.1.0
-      name: test_blahblah
+      name: juniper_system:description
       conversion: "regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
       #conversion: "regexp:(?P<os_name>JUNOS)"
   # Vendor specific OIDS
@@ -76,62 +76,84 @@ metric_tags:
       OID: .1.3.6.1.4.1.2636.3.1.2.0
       name: product_name
 
+# metric_tags:
+#   - column:
+#       OID: .1.3.6.1.2.1.1.1.0
+#       name: test_blahblah
+#       conversion: "regexp:(?P<sysDescr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
+
+
 metrics:
 
   # # Uptime
-  # - MIB: device_normalized
+  # - MIB: /device/system
   #   symbol: 
+  #     name: uptime-sec
   #     OID: 1.3.6.1.6.3.10.2.1.3.0
-  #     name: uptime_sec
-  #     poll_time_sec: 30
-  # - MIB: device_normalized
+
+  # - MIB: /device/system
   #   symbol:
-  #     OID: 1.3.6.1.2.1.1.3.0
   #     name: uptime
-  #     poll_time_sec: 30
-  # - MIB: device_normalized
+  #     OID: 1.3.6.1.2.1.1.3.0
+
+  # - MIB: /device/system
   #   symbol:
-  #     OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0.0
   #     name: temperature
-  #     poll_time_sec: 30
-  # - MIB: device_normalized
+  #     OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0.0
+
+  # - MIB: /device/system
   #   symbol:
+  #     name: cpu-utilization
   #     OID: 1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0.0
-  #     name: cpu_util
-  #     poll_time_sec: 30
-  # - MIB: device_normalized
+
+  # - MIB: /device/system
   #   symbol:
+  #     name: memory-utilizaton
   #     OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0.0
-  #     name: memory_util
-  #     poll_time_sec: 30
 
 
-  - MIB: device_normalized
+  - MIB: /device
     table:
       OID: 1.3.6.1.4.1.999999.2131313
-      name: ""
+      name: /system
     symbols:
-      - name: uptime_sec
+      - name: uptime-sec
         OID: 1.3.6.1.6.3.10.2.1.3
-      - name: uptime_timeticks
+      - name: uptime
         OID: 1.3.6.1.2.1.1.3
       - name: temperature
         OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0
-      - name: cpu_util
+      - name: cpu-utilization
         OID: 1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0
-      - name: memory_util
+      - name: memory-utilizaton
         OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0
         
-    # metric_tags:
-    #   - column:
-    #       OID: 1.3.6.1.2.1.1.1
-    #       name: test_blahblah
-    #       conversion: "regexp:(?P<descr>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
-    #       #conversion: "regexp:(?P<os_name>JUNOS)"
-    #   - column:
-    #       OID: 1.3.6.1.6.3.10.2.1.1
-    #       name: engine_test
-
+  #   metric_tags:
+  #     - column:
+  #         OID: .1.3.6.1.2.1.1.5
+  #         name: hostname
+  #     - column:
+  #         OID: .1.3.6.1.2.1.1.6
+  #         name: location
+  #     - column:
+  #         OID: .1.3.6.1.2.1.1.2
+  #         name: sys-object-id
+  #         allow_duplicate: true
+  #     - column:
+  #         OID: .1.3.6.1.2.1.1.1
+  #         name: test_description
+  #         #conversion: "regexp:(?P<asdasdasdsa>(?P<vendor>Juniper Networks), Inc\\. (?P<model>\\S+).*kernel (?P<os_name>\\S+).*\\s(?P<os_version>[\\w\\-]+\\.[\\w\\-]+\\.[\\w\\-]+).*)"
+  #         #conversion: "regexp:(?P<os_name>JUNOS)"
+  #     - column:
+  #         OID: .1.3.6.1.6.3.10.2.1.1
+  #         name: blabhsadasdas
+  #     # Vendor specific OIDS
+  #     - column:
+  #         OID: .1.3.6.1.4.1.2636.3.1.3
+  #         name: serial-number
+  #     - column:
+  #         OID: .1.3.6.1.4.1.2636.3.1.2
+  #         name: product-name
 
   # - column:
   #     OID: .1.0.8802.1.1.2.1.3.4.0

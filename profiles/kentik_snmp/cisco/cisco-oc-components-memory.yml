@@ -1,9 +1,7 @@
-# file: oc-components-memory_ciscoMemoryPoolTable.yml
+# file: cisco-oc-components-memory.yml
 # SNMP: CISCO-MEMORY-POOL-MIB::ciscoMemoryPoolTable
 # OC: /components/component/state/memory
 # Kentik-path: /components/memory
-
-
 ---
 
 extends:

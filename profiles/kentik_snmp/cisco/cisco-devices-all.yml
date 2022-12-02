@@ -4,7 +4,6 @@
 extends:
   # Generic MIB2 profiles
   - if-mib.yml
-  - system-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
   - oc-ospf.yml
@@ -19,3 +18,53 @@ extends:
   - cisco-oc-components-fan.yml
   - cisco-oc-components-temperature.yml
 
+metric_tags:
+
+  # Tags from SYSTEM-MIB which we need to parse in the vendor specific way
+  - column:
+      OID: .1.3.6.1.2.1.1.5.0
+      name: sysName
+  - column:
+      OID: .1.3.6.1.2.1.1.6.0
+      name: sysLocation
+  - column:
+      OID: .1.3.6.1.2.1.1.2.0
+      name: sysObjectID
+      allow_duplicate: true
+  - column:
+      OID: .1.3.6.1.2.1.1.1.0
+      name: cisco_system:details
+      # (?P<sysDescr>(?P<vendor>Cisco) (?P<os_name>(IOS|IOS XR|NX-OS|FX-OS)).*\((?P<os_type>.*)\).*Version (?P<os_version>[\w\d\(\)\.\-]+)[,\s\[\/].*)
+      conversion: "regexp:(?P<sysDescr>(?P<vendor>Cisco) (?P<os_name>(IOS|IOS XR|NX-OS|FX-OS)).*\\((?P<os_type>.*)\\).*Version (?P<os_version>[\\w\\d\\(\\)\\.\\-]+)[\\,\\s\\[\\/].*)"
+  # Vendor specific OIDS
+  - column:
+      OID: 1.3.6.1.2.1.47.1.1.1.1.11.1
+      name: serial_number
+  # - column:
+  #     OID: 1.3.6.1.4.1.9.9.25.1.1.1.2.5
+  #     name: os_version
+  #     conversion: "regexp:(\\d+[\\.\\w\\(\\)]+)"
+  # - column:
+  #     OID: 1.3.6.1.4.1.9.9.25.1.1.1.2.7
+  #     name: os_name
+  #     conversion: "regexp:\\((.*)\\),\\sVersion"
+
+
+metrics:
+
+  - MIB: /device
+    table:
+      OID: 1.3.6.1.4.1.999999.9
+      name: /system
+    symbols:
+      - name: uptime-sec
+        OID: 1.3.6.1.6.3.10.2.1.3
+      - name: uptime
+        OID: 1.3.6.1.2.1.1.3
+      - name: temperature
+        OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0
+      - name: cpu-utilization
+        OID: 1.3.6.1.4.1.9.2.1.58        # deprecated avgBusy5(58)
+        # OID: 1.3.6.1.4.1.9.2.1.57.0    # deprecated avgBusy1(57)
+      #- name: memory-utilizaton
+      #  OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0

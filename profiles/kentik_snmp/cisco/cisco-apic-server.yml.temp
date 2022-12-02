@@ -725,12 +725,12 @@ metrics:
       - name: ciscoEnvMonSupplyState
         OID: 1.3.6.1.4.1.9.9.13.1.5.1.3
         enum:
-          normal: 1
-          warning: 2
-          critical: 3
-          shutdown: 4
-          notPresent: 5
-          notFunctioning: 6
+          NORMAL: 1
+          WARNING: 2
+          CRITICAL: 3
+          SHUTDOWN: 4
+          NOTPRESENT: 5
+          NOTFUNCTIONING: 6
         tag: power_supply_state
     metric_tags:
       # Textual description of the power supply being instrumented.
