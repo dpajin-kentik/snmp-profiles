@@ -64,6 +64,8 @@ metrics:
 
     metric_tags:
 
+      # INDEX { cbgpPeer2Type, cbgpPeer2RemoteAddr }
+
       - tag: bgp:enabled
         column:
           OID: .1.3.6.1.4.1.9.9.187.1.2.5.1.4
@@ -161,9 +163,9 @@ metrics:
 
     symbols:
 
-      - tag: bgp:received-pre-policy    # in-prefixes
-        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.7
-        name: jnxBgpM2PrefixInPrefixes
+      # - tag: bgp:received-pre-policy    # in-prefixes
+      #   OID: 
+      #   name:
         
       - tag: bgp:received     # in-prefixes-accepted
         OID: .1.3.6.1.4.1.9.9.187.1.2.8.1.1
@@ -177,9 +179,9 @@ metrics:
         OID: .1.3.6.1.4.1.9.9.187.1.2.8.1.6
         name: cbgpPeer2AdvertisedPrefixes
         
-      - tag: bgp:installed    # in-prefixes-active
-        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.11
-        name: jnxBgpM2PrefixInPreixesActive
+      # - tag: bgp:installed    # in-prefixes-active
+      #   OID: 
+      #   name: 
         
 
     metric_tags:
@@ -187,39 +189,129 @@ metrics:
     # OC: afi-safi-name
     # https://github.com/openconfig/public/blob/master/release/models/bgp/openconfig-bgp-types.yang
 
-    - tag: bgp:afi
-      column:
-        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.1
-        name: jnxBgpM2PrefixCountersAfi
-        enum:
-          UNKNOWN: 0
-          IPV4: 1
-          IPV6: 2
-          IPV4Z: 3
-          IPV6Z: 4
-          DNS: 16
-          L2VPN: 25
-          LINKSTATE: 16388
+# cbgpPeer2AddrFamilyPrefixEntry OBJECT-TYPE
+#     INDEX {
+#         cbgpPeer2Type,
+#         cbgpPeer2RemoteAddr,
+#         cbgpPeer2AddrFamilyAfi,
+#         cbgpPeer2AddrFamilySafi
 
-    - tag: bgp:safi
+    # This is only used to run script
+    - tag: bgp:fake
       column:
-        OID: .1.3.6.1.4.1.2636.5.1.1.2.6.2.1.2
-        name: jnxBgpM2PrefixCountersSafi
+        OID: 1.3.6.1.4.1.9.9.187.1.2.8.1.1
+        name: cbgpPeer2AcceptedPrefixes
         enum:
-          UNICAST: 1
-          MULTICAST: 2
-          LABELED_UNICAST: 4
-          L3VPN: 128
-          MCAST-VPN: 129
-          FLOWSPEC: 133
-          MS-PW: 6
-          VPLS: 65
-          EVPN: 70
-          LINKSTATE: 71
-          VPN: 72
         script: |
           def main(n):
-            if n["bgp:afi"] not in "":
-              new_index_list = n.Index.split(".", 1)
-              n.Index = new_index_list[0]
+
+            # Create neigbor table index
+            new_index_list = n.Index.rsplit(".", 2)
+            n["bgp:neighbor-table-index"] = str(new_index_list[0])
+
+            # extract afi and safi values from the index
+            afi = int(new_index_list[1])
+            safi = int(new_index_list[2])
+            fffi = "UNKNOWN"
+
+            # IPV4
+            if afi == 0 or safi == 0:
+              afi  = "UNKNOWN"
+              safi = "UNKNOWN"
+              fffi = "UNKNOWN"
+
+            elif afi == 1 or safi == 1:
+              afi  = "IPV4"
+              safi = "UNICAST"
+              fffi = "IPV4_UNICAST"
+
+            elif afi == 1 or safi == 2:
+              afi  = "IPV4"
+              safi = "MULTICAST"
+              fffi = "IPV4_MULTICAST"
+
+            elif afi == 1 or safi == 4:
+              afi  = "IPV4"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV4_LABELED_UNICAST"
+
+            elif afi == 1 or safi == 128:
+              afi  = "IPV4"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV4_UNICAST"
+
+            elif afi == 1 or safi == 129:
+              afi  = "IPV4"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV4_MULTICAST"
+
+            elif afi == 2 or safi == 1:
+              afi  = "IPV6"
+              safi = "UNICAST"
+              fffi = "IPV6_UNICAST"
+
+            elif afi == 2 or safi == 2:
+              afi  = "IPV6"
+              safi = "MULTICAST"
+              fffi = "IPV6_MULTICAST"
+
+            elif afi == 2 or safi == 4:
+              afi  = "IPV6"
+              safi = "LABELED_UNICAST"
+              fffi = "IPV6_LABELED_UNICAST"
+
+            elif afi == 2 or safi == 128:
+              afi  = "IPV6"
+              safi = "L3VPN_UNICAST"
+              fffi = "L3VPN_IPV6_UNICAST"
+
+            elif afi == 2 or safi == 129:
+              afi  = "IPV6"
+              safi = "L3VPN_MULTICAST"
+              fffi = "L3VPN_IPV6_MULTICAST"
+
+            elif afi == 25 or safi == 65:
+              afi  = "L2VPN"
+              safi = "VPLS"
+              fffi = "L2VPN_VPLS"
+
+            elif afi == 25 or safi == 75:
+              afi  = "L2VPN"
+              safi = "EVPN"
+              fffi = "L2VPN_EVPN"
+
+            elif afi == 1 or safi == 73:
+              afi  = "IPV4"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV4"
+
+            elif afi == 2 or safi == 73:
+              afi  = "IPV6"
+              safi = "SRTE_POLICY"
+              fffi = "SRTE_POLICY_IPV6"
+
+            elif afi == 1 or safi == 133:
+              afi  = "IPV4"
+              safi = "FLOWSPEC"
+              fffi = "IPV4_FLOWSPEC"
+
+            elif afi == 1 or safi == 134:
+              afi  = "IPV4"
+              safi = "FLOWSPEC_VPN"
+              fffi = "VPNV4_FLOWSPEC"
+
+            elif afi == 16388 or safi == 71:
+              afi  = "BGP-LS"
+              safi = "BGP-LS"
+              fffi = "LINKSTATE"
+
+            elif afi == 16388 or safi == 72:
+              afi  = "BGP-LS"
+              safi = "BGP-LS-VPN"
+              fffi = "LINKSTATE_VPN"
+
+            n["bgp:afi"] = str(afi)
+            n["bgp:safi"] = str(safi)
+            n["bgp:afi-safi-name"] = str(fffi)
+          
             return None
