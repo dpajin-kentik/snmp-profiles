@@ -15,13 +15,3 @@ metric_tags:
   - column:
       OID: 1.3.6.1.2.1.1.6.0
       name: sysLocation
-
-metrics:
-  - MIB: device_normalized
-    symbol:
-      OID: 1.3.6.1.6.3.10.2.1.3.0
-      name: uptime_sec
-  - MIB: device_normalized
-    symbol:
-      OID: 1.3.6.1.2.1.1.3.0
-      name: uptime

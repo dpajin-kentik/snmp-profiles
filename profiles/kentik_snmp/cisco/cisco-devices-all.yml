@@ -3,6 +3,7 @@
 ---
 extends:
   # Generic MIB2 profiles
+  - system-mib.yml
   - if-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
@@ -20,25 +21,16 @@ extends:
 
 metric_tags:
 
-  # Tags from SYSTEM-MIB which we need to parse in the vendor specific way
-  - column:
-      OID: .1.3.6.1.2.1.1.5.0
-      name: sysName
-  - column:
-      OID: .1.3.6.1.2.1.1.6.0
-      name: sysLocation
-  - column:
-      OID: .1.3.6.1.2.1.1.2.0
-      name: sysObjectID
-      allow_duplicate: true
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
   - column:
       OID: .1.3.6.1.2.1.1.1.0
-      name: cisco_system:details
-      # (?P<sysDescr>(?P<vendor>Cisco) (?P<os_name>(IOS|IOS XR|NX-OS|FX-OS)).*\((?P<os_type>.*)\).*Version (?P<os_version>[\w\d\(\)\.\-]+)[,\s\[\/].*)
-      conversion: "regexp:(?P<sysDescr>(?P<vendor>Cisco) (?P<os_name>(IOS|IOS XR|NX-OS|FX-OS)).*\\((?P<os_type>.*)\\).*Version (?P<os_version>[\\w\\d\\(\\)\\.\\-]+)[\\,\\s\\[\\/].*)"
+      name: cisco:description
+      conversion: 'regexp:(?P<sysDescr>(?P<vendor>Cisco) (?P<os_name>IOS|IOS\sXR|NX-OS|FX-OS).*\((?P<os_type>.*)\).*Version (?P<os_version>[\w\d\(\)\.\-]+)[\,\s\[\/].*)'
+
   # Vendor specific OIDS
   - column:
-      OID: 1.3.6.1.2.1.47.1.1.1.1.11.1
+      OID: .1.3.6.1.2.1.47.1.1.1.1.11.1
       name: serial_number
   # - column:
   #     OID: 1.3.6.1.4.1.9.9.25.1.1.1.2.5

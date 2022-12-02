@@ -59,7 +59,7 @@ metrics:
             WARNING: 2
             MAJOR: 3
             CRITICAL: 4
-            UNKNOWN: 5
+            MISSING: 5
             UNKNOWN: 6
         # Represents the state of a device being monitored. Valid values are: 
         # normal(1): the environment is good, such as low temperature. 

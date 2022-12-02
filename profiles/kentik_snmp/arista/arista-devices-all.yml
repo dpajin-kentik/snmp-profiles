@@ -17,6 +17,7 @@ provider: kentik-switch
 
 extends:
   # Generic MIB2 profiles
+  - system-mib.yml
   - if-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
@@ -186,17 +187,9 @@ sysobjectid:
 
 
 metric_tags:
-  # Tags from SYSTEM-MIB which we need to parse in the vendor specific way
-  - column:
-      OID: .1.3.6.1.2.1.1.5.0
-      name: sysName
-  - column:
-      OID: .1.3.6.1.2.1.1.6.0
-      name: sysLocation
-  - column:
-      OID: .1.3.6.1.2.1.1.2.0
-      name: sysObjectID
-      allow_duplicate: true
+
+  # Tags that go into 'default' measurement name used for general device metadata
+  # Special parsing of the sysDescr to extract additional metadata
   - column:
       OID: .1.3.6.1.2.1.1.1.0
       name: arista_system:description
@@ -210,6 +203,7 @@ metric_tags:
   - column:
       OID: .1.3.6.1.2.1.47.1.1.1.1.11.1
       name: serial_number
+
 
 metrics:
 

@@ -130,7 +130,7 @@ metrics:
           # populating peer-index with index value for consistency with juniper
           script: |
             def main(n):
-              n["bgp:peer-index"] = n.Index
+              n["bgp:bgp:prefix-table-index"] = n.Index
               return None
 
       # Not in the OC - this is used to correlate the prefix counters in the different table        
@@ -225,7 +225,6 @@ metrics:
         enum:
         script: |
           def main(n):
-            print(n)
             new_index_list = n.Index.rsplit(".", 2)
             if new_index_list[1] == "0":
               n["bgp:afi"] = "UNKNOWN"
