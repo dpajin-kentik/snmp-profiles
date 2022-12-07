@@ -183,6 +183,7 @@ metrics:
           OID: .1.3.6.1.4.1.30065.4.1.1.2.1.1
           name: aristaBgp4V2PeerInstance
 
+
       # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/timers/state/keepalive-interval
       - tag: bgp:timers/keepalive-interval
         column:
@@ -193,6 +194,12 @@ metrics:
         column:
           OID: .1.3.6.1.4.1.30065.4.1.1.6.1.1
           name: aristaBgp4V2PeerHoldTime
+
+      - tag: bgp:timers/connect-retry
+        # oc-path: /network-instances/network-instance/protocols/protocol/bgp/neighbors/neighbor/timers/state/connect-retry
+        column:
+          OID: .1.3.6.1.4.1.30065.4.1.1.5.1.1
+          name: aristaBgp4V2PeerConnectRetryInterval
 
 
 

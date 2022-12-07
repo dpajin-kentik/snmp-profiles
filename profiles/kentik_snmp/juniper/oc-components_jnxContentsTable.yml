@@ -38,7 +38,8 @@ metrics:
       - tag: components:oper-status
         OID: .1.3.6.1.4.1.2636.3.1.13.1.6
         name: jnxOperatingState 
-        enum:                      # ENTTITY-STATE-MIB values: unknown: 1, disabled: 2, enabled: 3, testing: 4
+        enum:                      
+          # ENTTITY-STATE-MIB values: unknown: 1, disabled: 2, enabled: 3, testing: 4
           # These values are different from ENTITY-STATE
           unknown: 1
           running: 2

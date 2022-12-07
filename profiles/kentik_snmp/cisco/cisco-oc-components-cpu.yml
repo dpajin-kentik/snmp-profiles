@@ -16,16 +16,16 @@ metrics:
     symbols:
 
       # The overall CPU busy percentage in the last 1 minute period.
-      - tag: cpu-utilization:instant
+      - tag: cisco-components-cpu:instant
         OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.6
         name: cpmCPUTotal5secRev
 
-      - tag: cpu-utilization:avg
+      - tag: cisco-components-cpu:avg
         OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.7
         name: cpmCPUTotal1minRev
 
     metric_tags:
-      - tag: components:physical-index
+      - tag: cisco-components-cpu:physical-index
         column:
           OID: .1.3.6.1.4.1.9.9.109.1.1.1.1.2
           name: cpmCPUTotalPhysicalIndex
@@ -33,5 +33,5 @@ metrics:
         # which is the index value from the ENTITY-MIB
           script: |
             def main(n):
-              n["Index"] = str(n["components:physical-index"])
+              n["Index"] = str(n["cisco-components-cpu:physical-index"])
               return None

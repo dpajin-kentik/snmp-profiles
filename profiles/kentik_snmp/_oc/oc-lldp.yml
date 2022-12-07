@@ -44,6 +44,7 @@ metrics:
         column:
           OID: .1.0.8802.1.1.2.1.3.2
           name: lldpLocChassisId
+          conversion: hwaddr
 
       - tag: lldp:system-name
         column:
@@ -89,6 +90,7 @@ metrics:
         column:
           OID: 1.0.8802.1.1.2.1.4.1.1.5
           name: lldpRemChassisId
+          conversion: hwaddr
 
       - tag: lldp-neighbor:port-id-type
         column:
@@ -108,6 +110,7 @@ metrics:
         column:
           OID: 1.0.8802.1.1.2.1.4.1.1.7
           name: lldpRemPortId
+
 
       - tag: lldp-neighbor:port-description
         column:
