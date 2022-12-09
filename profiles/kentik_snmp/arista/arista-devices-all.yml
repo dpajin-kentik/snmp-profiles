@@ -31,6 +31,7 @@ extends:
   - arista-oc-bgp.yml
   - arista-mib-if.yml
   - arista-mib-queue.yml
+  - oc-system-cpus_hrProcessorTable.yml
 
 
 sysobjectid: 
@@ -206,45 +207,114 @@ metric_tags:
 
 metrics:
 
-  # Collecting Kentik basic metrics
-  - MIB: /device
-    table:
-      OID: 1.3.6.1.4.1.999999.30065
-      name: /system
-    symbols:
-      - tag: uptime-sec
-        OID: .1.3.6.1.6.3.10.2.1.3.0
-        name: uptime-sec
+  # # Collecting Kentik basic metrics
+  # - MIB: /kentik:device
+  #   table:
+  #     OID: 1.3.6.1.4.1.999999.30065
+  #     name: system
+  #   symbols:
+  #     - tag: kentik-device:uptime-sec
+  #       OID: 1.3.6.1.6.3.10.2.1.3.0
+  #       name: snmpEngineTime
 
-      # On Arista, always index 1 for aggregated info
-      - tag: cpu-utilization
+  #     # On Arista, always index 1 for aggregated info
+  #     - tag: kentik-device:cpu-utilization
+  #       OID: 1.3.6.1.2.1.25.3.3.1.2.1
+  #       name: hrProcessorLoad
+
+  #     # On Arista, always index 100 for aggregated info
+  #     - tag: memory-used
+  #       OID: 1.3.6.1.2.1.25.2.3.1.6.100
+  #       name: hrStorageUsed
+  #     - tag: memory-total
+  #       OID: 1.3.6.1.2.1.25.2.3.1.5.100
+  #       name: hrStorageSize
+  #     - tag: memory-units
+  #       OID: 1.3.6.1.2.1.25.2.3.1.4.100
+  #       name: hrStorageAllocationUnits
+  #       script: |
+  #         load('math.star', 'math')
+  #         def main(n):
+  #           print("arista-memory:")
+  #           print(n)
+  #           memory_units = int(n["memory-units"])
+  #           n.pop("memory-units")
+  #           n["memory-used"] = int(n["memory-used"]) * memory_units
+  #           n["memory-total"] = int(n["memory-total"]) * memory_units
+  #           n["memory-free"] = n["memory-total"] - n["memory-used"]
+  #           n["memory-utilization"] = float(float(100) * float(n["memory-used"]) / float(n["memory-total"])) 
+  #           # OC supports boot-time which is in nanosec
+  #           # n["boot-time"] = int(float(n["uptime-sec"] * math.pow(10, 9)))
+  #           return None
+
+
+# This is general oc-path /system
+  - MIB: "/"
+    table:
+      OID: 1.3.6.1.4.1.999999.2636.2
+      name: "system"
+    symbols:
+      - tag: oc-system:uptime-sec
+        OID: .1.3.6.1.6.3.10.2.1.3
+        name: snmpEngineTime
+        # Adding boot-time in nanosec
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            n["boot-time"] = int(float(n["oc-system:uptime-sec"] * math.pow(10, 9)))
+            return None
+
+# This is a single CPU utilization metrics
+# oc-path: openconfig-system:/system/cpus/cpu[index="ALL"]/state/total/instant
+# The "cpu" with index="ALL" gives values across all the CPUs or CPU cores
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.30065.3
+      name: "cpus"
+    symbols:
+      - tag: oc-system-cpus-all:total/instant
         OID: .1.3.6.1.2.1.25.3.3.1.2.1
         name: hrProcessorLoad
+    metric_tags:
+      - column:
+          OID: 1.3.6.1.6.3.1135.6169.ALL
+          name: oc-system-cpus-all:cpu_index
+          # this is static value assignment for string "ALL"
+      - column:
+          OID: 1.3.6.1.6.3.1135.6169.0
+          name: oc-system-cpus-all:index
 
-      # On Arista, always index 100 for aggregated info
-      - tag: memory-used
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+# On Arista, always index 100 for aggregated info
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.30065.4
+      name: "memory"
+    symbols:
+      - tag: oc-memory:used
         OID: 1.3.6.1.2.1.25.2.3.1.6.100
         name: hrStorageUsed
-      - tag: memory-total
+
+      - tag: oc-memory:physical
         OID: 1.3.6.1.2.1.25.2.3.1.5.100
         name: hrStorageSize
-      - tag: memory-units
+
+      - tag: oc-memory:memory-units
         OID: 1.3.6.1.2.1.25.2.3.1.4.100
         name: hrStorageAllocationUnits
         script: |
           load('math.star', 'math')
           def main(n):
-            print("memory test")
-            print(n)
-            n["memory-used"] = int(n["memory-used"]) * int(n["memory-units"])
-            n["memory-total"] = int(n["memory-total"]) * int(n["memory-units"])
-            n["memory-free"] = n["memory-total"] - n["memory-used"]
-            n["memory-utilization"] = float(float(100) * float(n["memory-used"]) / float(n["memory-total"])) 
-            # OC supports boot-time which is in nanosec
-            # n["boot-time"] = int(float(n["uptime-sec"] * math.pow(10, 9)))
-            n.pop("memory-units") 
-            print(n)
+            memory_units = int(n.pop("oc-memory:memory-units"))
+            n["oc-memory:used"] = int(n["oc-memory:used"]) * memory_units
+            n["oc-memory:physical"] = int(n["oc-memory:physical"]) * memory_units
+            n["oc-memory:free"] = n["oc-memory:physical"] - n["oc-memory:used"]
+            n["oc-memory:utilization"] = float(float(100) * float(n["oc-memory:used"]) / float(n["oc-memory:physical"])) 
             return None
-
 
 # Needs metrics processing by the script

@@ -1,16 +1,17 @@
+# NOTE: Profile is not usable yet because ktranslate uses hardcoded collection of interface statistics
+#
 # oc-interfaces_ifXTable.yml
 # SNMP: IF-MIB::ifXTable, IF-MIB::ifTable
 # OC: /interfaces/interface/state
 
 # Profile intents to collect metadata and metrics about device interface from SNMP IF-MIB::ifTable and IF-MIB::ifXTable
 # Trying to normalize metrics to openconfig-interfaces model as much as possible
-#
 
 metrics:
   - MIB: openconfig-interfaces
     table:
       OID: 1.3.6.1.2.1.2.2
-      name: /interfaces/state/counters
+      name: /interfaces/counters
       # oc_path: /interfaces/interface/state/counters
     symbols:
 

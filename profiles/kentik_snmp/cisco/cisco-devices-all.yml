@@ -18,6 +18,7 @@ extends:
   - cisco-oc-components-power-supply.yml
   - cisco-oc-components-fan.yml
   - cisco-oc-components-temperature.yml
+  - cisco-mib-if-extension.yml
 
 metric_tags:
 
@@ -44,19 +45,101 @@ metric_tags:
 
 metrics:
 
-  - MIB: /device
+  # - MIB: /device
+  #   table:
+  #     OID: 1.3.6.1.4.1.999999.9
+  #     name: /system
+  #   symbols:
+  #     - name: uptime-sec
+  #       OID: 1.3.6.1.6.3.10.2.1.3
+  #     - name: uptime
+  #       OID: 1.3.6.1.2.1.1.3
+  #     - name: temperature
+  #       OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0
+  #     - name: cpu-utilization
+  #       OID: 1.3.6.1.4.1.9.2.1.58        # deprecated avgBusy5(58)
+  #       # OID: 1.3.6.1.4.1.9.2.1.57.0    # deprecated avgBusy1(57)
+  #     #- name: memory-utilizaton
+  #     #  OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0
+
+
+# This is general oc-path /system
+  - MIB: "/"
     table:
-      OID: 1.3.6.1.4.1.999999.9
-      name: /system
+      OID: 1.3.6.1.4.1.999999.9.2
+      name: "system"
     symbols:
-      - name: uptime-sec
-        OID: 1.3.6.1.6.3.10.2.1.3
-      - name: uptime
-        OID: 1.3.6.1.2.1.1.3
-      - name: temperature
-        OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0
-      - name: cpu-utilization
-        OID: 1.3.6.1.4.1.9.2.1.58        # deprecated avgBusy5(58)
-        # OID: 1.3.6.1.4.1.9.2.1.57.0    # deprecated avgBusy1(57)
-      #- name: memory-utilizaton
-      #  OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0
+      - tag: oc-system:uptime-sec
+        OID: .1.3.6.1.6.3.10.2.1.3
+        name: snmpEngineTime
+        # Adding boot-time in nanosec
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            n["boot-time"] = int(float(n["oc-system:uptime-sec"] * math.pow(10, 9)))
+            return None
+
+# This is a single CPU utilization metrics
+# oc-path: openconfig-system:/system/cpus/cpu[index="ALL"]/state/total/instant
+# The "cpu" with index="ALL" gives values across all the CPUs or CPU cores
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.9.3
+      name: "cpus"
+    symbols:
+      - tag: oc-system-cpus-all:total/instant
+        OID: .1.3.6.1.4.1.9.2.1.58.0
+        name: avgBusy5
+    metric_tags:
+      - column:
+          # this is static value assignment for string "ALL"
+          OID: 1.3.6.1.6.3.1135.6169.ALL
+          name: oc-system-cpus-all:cpu_index
+      - column:
+          # this is static value assignment of string index="0"
+          OID: 1.3.6.1.6.3.1135.6169.0
+          name: oc-system-cpus-all:index
+
+
+# This is a single memory info
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+# On Cisco using ciscoMemoryPoolTable(1) .1.3.6.1.4.1.9.9.48.1.1 with index=1
+  - MIB: "/system"
+    table:
+      OID: 1.3.6.1.4.1.999999.9.4
+      name: "memory"
+    symbols:
+      - tag: oc-memory:used
+        OID: 1.3.6.1.4.1.9.9.48.1.1.1.5.1
+        name: ciscoMemoryPoolUsed
+
+      - tag: oc-memory:free
+        OID: 1.3.6.1.4.1.9.9.48.1.1.1.6.1
+        name: ciscoMemoryPoolFree
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            n["oc-memory:used"] = int(n["oc-memory:used"])
+            n["oc-memory:free"] = int(n["oc-memory:free"])
+            n["oc-memory:physical"] = n["oc-memory:used"] + n["oc-memory:free"]
+            n["oc-memory:utilization"] = float(float(100) * float(n["oc-memory:used"]) / float(n["oc-memory:physical"]))
+            return None
+
+
+
+  # - MIB: device_normalized
+  #   symbol:
+  #     OID: 1.3.6.1.4.1.9.9.48.1.1.1.5.1
+  #     name: memory_util
+  #     tag: MemoryUsed
+  #     allow_duplicate: true
+  # - MIB: device_normalized
+  #   symbol:
+  #     OID: 1.3.6.1.4.1.9.9.48.1.1.1.6.1
+  #     name: memory_util
+  #     tag: MemoryFree
+  #     allow_duplicate: true

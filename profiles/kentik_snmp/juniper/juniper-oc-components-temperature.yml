@@ -1,4 +1,4 @@
-# oc-components-temperature_jnxOperatingTable.yml
+# juniper-oc-components-temperature.yml
 # SNMP: 
 #   - JUNIPER-MIB::jnxContentsTable
 #   - JUNIPER-MIB::jnxOperatingTable

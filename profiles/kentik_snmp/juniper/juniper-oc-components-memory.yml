@@ -1,4 +1,4 @@
-# oc-components-memory_jnxOperatingTable.yml
+# juniper-oc-components-memory.yml
 # SNMP: 
 #   - JUNIPER-MIB::jnxContentsTable
 #   - JUNIPER-MIB::jnxOperatingTable

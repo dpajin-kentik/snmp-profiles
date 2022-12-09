@@ -18,21 +18,21 @@
 ---
 extends:
   # Generic MIB2 profiles
-  #- if-mib.yml
+  - if-mib.yml
   - system-mib.yml
   # Normalized to Kentik/OC data models
   - oc-lldp.yml
   - oc-ospf.yml
   - oc-address-ipv4_ipAddrTable.yml
   - oc-address-ipv6_ipv6AddrTable.yml
-  # - oc-components_entPhysicalTable.yml  # can be enabled if Juniper device supports ENTITY-MIB
-  # - oc-components-sensor_entPhySensorTable.yml
+  # - oc-components_entPhysicalTable.yml           # can be enabled if Juniper device supports ENTITY-MIB
+  # - oc-components-sensor_entPhySensorTable.yml   # can be enabled if Juniper device supports ENTITY-SENSOR-MIB
 
   # Juniper to OC
-  - oc-components-cpu_jnxOperatingTable.yml
-  - oc-components-memory_jnxOperatingTable.yml
-  - oc-components-temperature_jnxOperatingTable.yml
-  # - oc-bgp-neighbors_jnxBgpM2PeerTable.yml
+  - juniper-oc-components.yml
+  - juniper-oc-components-cpu.yml
+  - juniper-oc-components-memory.yml
+  - juniper-oc-components-temperature.yml
   - juniper-oc-bgp.yml
 
 sysobjectid:
@@ -59,22 +59,27 @@ metric_tags:
 
 metrics:
 
-# this is something that can be Kentik proprietary
-  - MIB: "kentik:/device/"
-    table:
-      OID: 1.3.6.1.4.1.999999.2636
-      name: /system
-    symbols:
-      - name: uptime-sec
-        OID: 1.3.6.1.6.3.10.2.1.3
-      - name: uptime
-        OID: 1.3.6.1.2.1.1.3
-      - name: temperature
-        OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0
-      - name: cpu-utilization
-        OID: 1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0
-      - name: memory-utilizaton
-        OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0
+# # this is something that can be Kentik proprietary
+#   - MIB: "/kentik:device"
+#     table:
+#       OID: 1.3.6.1.4.1.999999.2636
+#       name: system
+#     symbols:
+#       # - tag: kentik-device:uptime-sec
+#       #   OID: 1.3.6.1.6.3.10.2.1.3.0
+#       #   name: snmpEngineTime
+
+#       - tag: kentik-device:temperature
+#         OID: 1.3.6.1.4.1.2636.3.1.13.1.7.9.1.0.0
+#         name: jnxOperatingTemp
+
+#       - tag: kentik-device:cpu-utilization
+#         OID: 1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0.0
+#         name: jnxOperatingCPU
+
+#       - tag: kentik-device:memory-utilizaton
+#         OID: 1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0.0
+#         name: jnxOperatingBuffer
 
 # This is general oc-path /system
   - MIB: "/"
@@ -82,45 +87,53 @@ metrics:
       OID: 1.3.6.1.4.1.999999.2636.2
       name: "system"
     symbols:
-      - name: uptime-sec
+      - tag: oc-system:uptime-sec
         OID: .1.3.6.1.6.3.10.2.1.3
-      # boot-time is in nanosec, it should be created from uptime-sec
-      # - name: boot-time
+        name: snmpEngineTime
+        # Adding boot-time in nanosec
+        script: |
+          load('math.star', 'math')
+          def main(n):
+            n["boot-time"] = int(float(n["oc-system:uptime-sec"] * math.pow(10, 9)))
+            return None
 
 # This is a single CPU utilization metrics
 # oc-path: openconfig-system:/system/cpus/cpu[index="ALL"]/state/total/instant
-
-  - MIB: "/"
+# The "cpu" with index="ALL" gives values across all the CPUs or CPU cores
+  - MIB: "/system"
     table:
       OID: 1.3.6.1.4.1.999999.2636.3
-      name: "system/cpus"
-    symbols:      
-      # OC paths for CPUs for the device. 
-      # The "cpu" with index="ALL" gives values across all the CPUs or CPU cores
-      # oc-path: openconfig-system:/system/cpus/cpu/state/total/instant
-      # oc-path: openconfig-system:/system/cpus/cpu[index="ALL"]/state/total/instant
-      - name: cpus:total/instant
-        OID: .1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0
+      name: "cpus"
+    symbols:
+      - tag: oc-cpus:total/instant
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.8.9.1.0.0
+        name: jnxOperatingCPU
     metric_tags:
       - column:
-        name: cpu_index
-        OID: 1.3.6.1.6.3.1135.6169.ALL
+          name: cpu_index
+          OID: 1.3.6.1.6.3.1135.6169.ALL
+      - column:
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0
 
 # This is a single memory info
-  - MIB: "/"
+# OC paths for memory, no path for utilization
+# oc-path: openconfig-system:/system/memory/state/physical
+# oc-path: openconfig-system:/system/memory/state/reserved
+# oc-path: openconfig-system:/system/memory/state/used
+# oc-path: openconfig-system:/system/memory/state/free
+  - MIB: "/system"
     table:
       OID: 1.3.6.1.4.1.999999.2636.4
-      name: "system/memory"
-    symbols:      
-      # OC paths for memory, no path for utilization
-      # oc-path: openconfig-system:/system/memory/state/physical
-      # oc-path: openconfig-system:/system/memory/state/reserved
-      # oc-path: openconfig-system:/system/memory/state/used
-      # oc-path: openconfig-system:/system/memory/state/free
-      - name: oc-memory:utilization
-        OID: .1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0
-
-
+      name: "memory"
+    symbols:
+      - tag: oc-memory:utilization
+        OID: .1.3.6.1.4.1.2636.3.1.13.1.11.9.1.0.0
+        name: jnxOperatingBuffer
+    metric_tags:
+      - column:
+          name: index
+          OID: 1.3.6.1.6.3.1135.6169.0
   #   metric_tags:
   #     - column:
   #         OID: .1.3.6.1.2.1.1.5
