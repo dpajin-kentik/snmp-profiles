@@ -38,13 +38,11 @@ metrics:
               n["cisco-components-fan:oper-status"] = 1
               n["cisco-components-fan:alarm-status"] = 0
               n["cisco-components-fan:alarm-severity"] = 0
-              n["cisco-components-fan:state1"] = "normal"
             # WARNING
             elif n["cisco-components-fan:state"] == 2:
               n["cisco-components-fan:oper-status"] = 1
               n["cisco-components-fan:alarm-status"] = 1
               n["cisco-components-fan:alarm-severity"] = 2
-              n["cisco-components-fan:state1"] = "warning"
             # MAJOR
             elif n["cisco-components-fan:state"] == 3:
               n["cisco-components-fan:oper-status"] = 1

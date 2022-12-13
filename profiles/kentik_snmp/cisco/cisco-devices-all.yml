@@ -13,6 +13,7 @@ extends:
   - oc-components_entPhysicalTable.yml
   - oc-components-sensor_entPhySensorTable.yml
   # Cisco specific stuff
+  - cisco-oc-bgp.yml
   - cisco-oc-components-cpu.yml
   - cisco-oc-components-memory.yml
   - cisco-oc-components-power-supply.yml

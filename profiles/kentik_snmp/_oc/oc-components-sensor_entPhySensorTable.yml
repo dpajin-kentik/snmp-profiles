@@ -23,10 +23,6 @@ metrics:
 
     symbols:
 
-      - tag: sensor:value
-        OID: .1.3.6.1.2.1.99.1.1.1.4
-        name: entPhySensorValue
-
       - tag: sensor:oper-status
         OID: .1.3.6.1.2.1.99.1.1.1.5
         name: entPhySensorOperStatus
@@ -34,18 +30,59 @@ metrics:
         # The value 'ok(1)' indicates that the agent can obtain the sensor value. 
         # The value 'unavailable(2)' indicates that the agent presently cannot obtain the sensor value. 
         # The value 'nonoperational(3)' indicates that the agent believes the sensor is broken. The sensor could have a hard failure (disconnected wire), or a soft failure such as out- of-range, jittery, or wildly fluctuating readings.
-        enum:
-          ok: 1
-          unavailable: 2
-          nonoperational: 3
+        # enum:
+        #   ok: 1
+        #   unavailable: 2
+        #   nonoperational: 3
+        # script: |
+        #   def main(n):
+        #     # UNKNOWN (0)
+        #     if n["sensor:oper-status"] == 2:
+        #       n["sensor:oper-status"] = 0
+        #     # INACTIVE - down (2)
+        #     if n["sensor:oper-status"] == 3:
+        #       n["sensor:oper-status"] = 2
+        #     return None
+
+      # using those here in metrics, so that we are able to calculate the exact value
+      # - tag: sensor-metric:type
+      #   OID: .1.3.6.1.2.1.99.1.1.1.1
+      #   name: entPhySensorType
+        
+      - tag: sensor-metric:scale
+        OID: .1.3.6.1.2.1.99.1.1.1.2
+        name: entPhySensorScale
+
+      - tag: sensor-metric:precision
+        OID: .1.3.6.1.2.1.99.1.1.1.3
+        name: entPhySensorPrecision
+
+      - tag: sensor-metric:value
+        OID: .1.3.6.1.2.1.99.1.1.1.4
+        name: entPhySensorValue
         script: |
+          load('math.star', 'math')
           def main(n):
+            print("sensor")
+            print(n)
             # UNKNOWN (0)
             if n["sensor:oper-status"] == 2:
               n["sensor:oper-status"] = 0
             # INACTIVE - down (2)
             if n["sensor:oper-status"] == 3:
               n["sensor:oper-status"] = 2
+            print("sensor values")
+            scale = int(n.pop("sensor-metric:scale"))
+            print("sensor1")
+            precision = int(n.pop("sensor-metric:precision"))
+            print("sensor2")
+            value = int(n["sensor-metric:value"])
+            print("sensor3")
+            scale_size = 3 * (scale - 9)
+            print("senso4")
+            n["sensor-metric:exact-value"] = float(value * math.pow(10, scale_size) / math.pow(10, precision))
+            print("sensor5  ")
+            print(n)
             return None
 
 

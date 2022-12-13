@@ -70,13 +70,21 @@ metrics:
         poll_time_sec: 60
         tag: if_OperStatus
         enum:
-          up: 1
-          down: 2
-          testing: 3
-          unknown: 4
-          dormant: 5
-          notPresent: 6
-          lowerLayerDown: 7
+          UP: 1
+          DOWN: 2
+          TESTING: 3
+          UNKNOWN: 4
+          DORMANT: 5
+          NOT_PRESENT: 6
+          LOWER_LAYER_DOWN: 7
+        # enum:
+        #   up: 1
+        #   down: 2
+        #   testing: 3
+        #   unknown: 4
+        #   dormant: 5
+        #   notPresent: 6
+        #   lowerLayerDown: 7
     metric_tags:
       # A unique value, greater than zero, for each interface.
       - tag: if_Index

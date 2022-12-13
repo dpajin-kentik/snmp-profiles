@@ -78,5 +78,6 @@ metrics:
               n["ipv6-address:ifindex"] = index_list[0]
               ip = index_to_ipv6_address(index_list[1])
               n["ipv6-address:ip"] = ip
+              n["ipv6-address:ip-prefix"] = ip + "/" + str(n["ipv6-address:prefix-length"])
 
             return None

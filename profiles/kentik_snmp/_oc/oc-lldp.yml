@@ -57,6 +57,53 @@ metrics:
           name: lldpLocSysDesc
 
 
+
+
+# LLDP interface metadata
+# SNMP: LLDP-MIB::lldpLocPortTable
+# OC: /lldp/interfaces/interface/state
+# Kentik-path: /lldp/interfaces
+  - MIB: 	/lldp
+    table:
+      OID: .1.0.8802.1.1.2.1.4.1    # LLDP-MIB::lldpLocPortTable
+      name: interfaces
+    symbols:
+
+      - tag: lldp-interface:port-id
+        OID: .1.0.8802.1.1.2.1.3.7.1.3
+        name: lldpLocPortId
+
+    metric_tags:
+
+      - tag: lldp-interface:port-id
+        column:
+          OID: .1.0.8802.1.1.2.1.3.7.1.3
+          name: lldpLocPortId
+          script: |
+            def main(n):
+              if n["lldp-interface:port-id-type"].lower() == "interface_name":
+                n["lldp-interface:name"] = n["lldp-interface:port-id"]
+              elif n["lldp-interface:port-id-type"].lower() == "local":
+                n["lldp-interface:ifindex"] = n["lldp-interface:port-id"]
+              elif n["lldp-interface:port-id-type"].lower() == "interface_alias":
+                n["lldp-interface:alias"] = n["lldp-interface:port-id"]
+              return None
+
+      - tag: lldp-interface:port-id-type
+        column:
+          OID: .1.0.8802.1.1.2.1.3.7.1.2
+          name: lldpLocPortIdSubtype
+          enum: 
+            INTERFACE_ALIAS: 1
+            PORT_COMPONENT: 2
+            MAC_ADDRESS: 3
+            NETWORK_ADDRESS: 4
+            INTERFACE_NAME: 5
+            AGENT_CIRCUIT_ID: 6
+            LOCAL: 7
+
+
+
 # LLDP neighbors metadata
 # SNMP: LLDP-MIB::lldpRemTable
 # OC: /lldp/interfaces/interface/neighbors/neighbor/state
@@ -110,7 +157,12 @@ metrics:
         column:
           OID: 1.0.8802.1.1.2.1.4.1.1.7
           name: lldpRemPortId
-
+          # creates additional field "local-port-index", which is the index of the local port table 
+          script: |
+            def main(n):
+              index_list = n["Index"].split(".")
+              n["local-port-index"] = index_list[1]
+              return None
 
       - tag: lldp-neighbor:port-description
         column:
