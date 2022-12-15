@@ -63,26 +63,17 @@ metrics:
         script: |
           load('math.star', 'math')
           def main(n):
-            print("sensor")
-            print(n)
             # UNKNOWN (0)
             if n["sensor:oper-status"] == 2:
               n["sensor:oper-status"] = 0
             # INACTIVE - down (2)
             if n["sensor:oper-status"] == 3:
               n["sensor:oper-status"] = 2
-            print("sensor values")
             scale = int(n.pop("sensor-metric:scale"))
-            print("sensor1")
             precision = int(n.pop("sensor-metric:precision"))
-            print("sensor2")
             value = int(n["sensor-metric:value"])
-            print("sensor3")
             scale_size = 3 * (scale - 9)
-            print("senso4")
             n["sensor-metric:exact-value"] = float(value * math.pow(10, scale_size) / math.pow(10, precision))
-            print("sensor5  ")
-            print(n)
             return None
 
 

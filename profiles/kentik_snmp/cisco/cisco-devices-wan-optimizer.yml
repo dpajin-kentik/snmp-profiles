@@ -1,8 +1,30 @@
 # https://oidref.com/1.3.6.1.4.1.9.9.762.1.2
 ---
+
 extends:
-  - cisco-all-devices.yml
+
+  # Standard
+  - system-mib.yml
+  - if-mib.yml
   - host-resources-mib.yml
+
+  # Normalized from standard MIBs to Kentik OC data models
+  - oc-system-uptime.yml
+  - oc-lldp.yml
+  - oc-address-ipv4_ipAddrTable.yml
+  - oc-address-ipv6_ipv6AddrTable.yml
+  - oc-components_entPhysicalTable.yml
+  - oc-components-sensor_entPhySensorTable.yml
+
+  # Cisco OC normalized
+  - cisco-oc-system-cpus.yml
+  - cisco-oc-system-memory.yml
+  - cisco-oc-components-cpu.yml
+  - cisco-oc-components-memory.yml
+  - cisco-oc-components-memory_cempMemPoolTable.yml
+  - cisco-oc-components-power-supply.yml
+  - cisco-oc-components-fan.yml
+  - cisco-oc-components-temperature.yml
 
 provider: kentik-cisco-wan-optimizer
 

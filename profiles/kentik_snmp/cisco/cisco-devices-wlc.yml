@@ -4,7 +4,7 @@
 # https://mibs.observium.org/mib/AIRESPACE-WIRELESS-MIB/
 ---
 extends:
-  - cisco-all-devices.yml
+  - cisco-devices-all.yml
   - host-resources-mib.yml
 
 provider: kentik-wireless-controller

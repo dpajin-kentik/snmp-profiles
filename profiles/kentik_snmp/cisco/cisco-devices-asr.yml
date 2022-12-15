@@ -3,7 +3,7 @@
 # https://www.circitor.fr/Mibs/Html/C/CISCO-PRODUCT-MIB.php
 ---
 extends:
-  - cisco-all-devices.yml
+  - cisco-devices-all.yml
 
 provider: kentik-router
 
