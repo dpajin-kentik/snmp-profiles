@@ -5,6 +5,12 @@
 extends:
   - system-mib.yml
   - if-mib.yml
+
+  # Cisco OC normlalized
+  - cisco-oc-system-cpus.yml
+  - cisco-oc-system-memory.yml
+
+  # Cisco MIBs
   - cisco-mib-dot11-association.yml
 
 provider: kentik-cisco-ap
