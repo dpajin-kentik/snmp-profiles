@@ -1,87 +1,47 @@
 # Profile is intended to be used in an extends block
 # http://oid-info.com/get/1.3.6.1.2.1.14
 ---
-
-
-
-
-
-
-# metrics:
-#   - MIB: device_ospf
-#     symbol:
-#       OID: 1.3.6.1.2.1.14.1.6.0
-#       name: ospf-external-lsa-count
-#     metric_tags:
-#       - column:
-#           OID: .1.3.6.1.2.1.14.1.1.0
-#           name: ospf-router-id
-#       - column:
-#           OID: .1.3.6.1.2.1.14.1.2.0
-#           name: ospf-version
-
-# metrics:
-#   - MIB: device_ospf
-#     symbol:
-#       OID: 1.3.6.1.2.1.14.1.6.0
-#       name: ospf-external-lsa-count
-
-#     metric_tags:
-#       - column:
-#           OID: 1.3.6.1.2.1.14.1.1.0
-#           name: ospf-router-id
-#       - column:
-#           OID: 1.3.6.1.2.1.14.1.2.0
-#           name: ospf-version
-
 metrics:
-  - MIB: ospf
+  - MIB: OSPF-MIB
     table:
-      OID: 1.3.6.1.4.1.14.1
-      name: ospf/global
+      OID: 1.3.6.1.2.1.14.10
+      name: ospfNbrTable
     symbols:
-      - OID: 1.3.6.1.2.1.14.1.6
-        name: ospf-external-lsa-count
-      #- OID: 1.3.6.1.2.1.14.1.24
-      #  name: ospf-as-lsa-count
-
+      - OID: 1.3.6.1.2.1.14.10.1.6
+        name: ospfNbrState
+        enum:
+          down: 1
+          attempt: 2
+          init: 3
+          twoWay: 4
+          exchangeStart: 5
+          exchange: 6
+          loading: 7
+          full: 8
+      - OID: 1.3.6.1.2.1.14.10.1.7
+        name: ospfNbrEvents
+      - OID: 1.3.6.1.2.1.14.10.1.8
+        name: ospfNbrLsRetransQLen
     metric_tags:
       - column:
-          OID: 1.3.6.1.2.1.14.1.1
-          name: ospf-router-id
+          OID: 1.3.6.1.2.1.14.10.1.3
+          name: ospfNbrRtrId
+          allow_duplicate: true
+        tag: neighbor_id
       - column:
-          OID: 1.3.6.1.2.1.14.1.3
-          name: ospf-version
-      - column:
-          OID: 1.3.6.1.2.1.14.1.4
-          name: ospf-area-border-router
-          enum: 
-            "true": 1
-            "false": 2
-      - column:
-          OID: 1.3.6.1.2.1.14.1.5
-          name: ospf-as-border-router
-          enum: 
-            "true": 1
-            "false": 2
-      - column:
-          OID: 1.3.6.1.2.1.14.1.16
-          name: ospf-opaque-lsa-support
-      - column:
-          OID: 1.3.6.1.2.1.14.1.17
-          name: ospf-reference-bandwidth
-
-  - MIB: ospf
+          OID: 1.3.6.1.2.1.14.10.1.1
+          name: ospfNbrIpAddr
+          allow_duplicate: true
+        tag: neighbor_ip
+  - MIB: OSPF-MIB
     table:
       OID: 1.3.6.1.2.1.14.7
-      name: ospf/interface
+      name: ospfIfTable
     symbols:
-      - OID: 1.3.6.1.2.1.14.8.1.4
-        name: metric
-      - OID: 1.3.6.1.2.1.14.7.1.21
-        name: lsa-count
+      - OID: 1.3.6.1.2.1.14.7.1.8
+        name: ospfIfRetransInterval
       - OID: 1.3.6.1.2.1.14.7.1.12
-        name: state
+        name: ospfIfState
         enum:
           down: 1
           loopback: 2
@@ -90,100 +50,17 @@ metrics:
           designatedRouter: 5
           backupDesignatedRouter: 6
           otherDesignatedRouter: 7
-
+      - OID: 1.3.6.1.2.1.14.7.1.21
+        name: ospfIfLsaCount
     metric_tags:
       - column:
           OID: 1.3.6.1.2.1.14.7.1.1
-          name: ip-address
+          name: ospfIfIpAddress
+        tag: ospf_ip_address
       - column:
-          OID: 1.3.6.1.2.1.14.7.1.2
-          name: ifindex
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.3
-          name: area
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.4
-          name: network-type
-          enum: 
-            broadcast: 1
-            nbma: 2
-            pointToPoint: 3
-            pointToMultipoint: 5
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.6
-          name: priority
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.8
-          name: retransmission-interval
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.9
-          name: hello-interval
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.10
-          name: dead-interval
-      - column:
-          OID: 1.3.6.1.2.1.14.8.1.4
-          name: metric
-      - column:
-          OID: 1.3.6.1.2.1.14.7.1.20
-          name: authentication-type
-          enum:
-            none: 0
-            simplePassword: 1
-            md5: 2
-
-  # - MIB: OSPF-MIB
-  #   table:
-  #     OID: 1.3.6.1.2.1.14.10
-  #     name: ospfNbrTable
-  #   symbols:
-  #     - OID: 1.3.6.1.2.1.14.10.1.6
-  #       name: ospfNbrState
-  #       enum:
-  #         down: 1
-  #         attempt: 2
-  #         init: 3
-  #         twoWay: 4
-  #         exchangeStart: 5
-  #         exchange: 6
-  #         loading: 7
-  #         full: 8
-  #     - OID: 1.3.6.1.2.1.14.10.1.7
-  #       name: ospfNbrEvents
-  #     - OID: 1.3.6.1.2.1.14.10.1.8
-  #       name: ospfNbrLsRetransQLen
-  #   metric_tags:
-  #     - column:
-  #         OID: 1.3.6.1.2.1.14.10.1.3
-  #         name: ospfNbrRtrId
-  #         allow_duplicate: true
-  #       tag: neighbor_id
-  #     - column:
-  #         OID: 1.3.6.1.2.1.14.10.1.1
-  #         name: ospfNbrIpAddr
-  #         allow_duplicate: true
-  #       tag: neighbor_ip
-  # - MIB: OSPF-MIB
-  #   table:
-  #     OID: 1.3.6.1.2.1.14.7
-  #     name: ospfIfTable
-  #   symbols:
-  #     - OID: 1.3.6.1.2.1.14.7.1.8
-  #       name: ospfIfRetransInterval
-  #     - OID: 1.3.6.1.2.1.14.7.1.12
-  #       name: ospfIfState
-  #       enum:
-  #         down: 1
-  #         loopback: 2
-  #         waiting: 3
-  #         pointToPoint: 4
-  #         designatedRouter: 5
-  #         backupDesignatedRouter: 6
-  #         otherDesignatedRouter: 7
-  #     - OID: 1.3.6.1.2.1.14.7.1.21
-  #       name: ospfIfLsaCount
-  #   metric_tags:
-  #     - column:
-  #         OID: 1.3.6.1.2.1.14.7.1.1
-  #         name: ospfIfIpAddress
-  #       tag: ospf_ip_address
+          OID: 1.3.6.1.2.1.14.10.1.3
+          name: ospfNbrRtrId
+          allow_duplicate: true
+        table: ospfNbrTable
+        MIB: OSPF-MIB
+        tag: neighbor_id
